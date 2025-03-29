@@ -285,35 +285,54 @@
   </div>
 
   <script>
-    document.getElementById('suretalk-signup-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      // Form validation
-      const formData = {
-        firstName: document.getElementById('firstName').value,
-        lastName: document.getElementById('lastName').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value,
-        usage: document.getElementById('usage').value,
-        joinProgram: document.getElementById('joinProgram').checked,
-        agreeTerms: document.getElementById('agreeTerms').checked
-      };
-      
-      // Basic validation
-      if (!formData.firstName || !formData.email || !formData.phone || !formData.password || !formData.agreeTerms) {
-        alert('Please fill in all required fields');
-        return;
-      }
-      
-      // Here you would typically send to your backend
-      console.log('Form submitted:', formData);
-      alert('Account created successfully! (This would connect to your backend in production)');
-      
-      // Reset form
-      this.reset();
+    document.getElementById('suretalk-signup-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  // Show loading state
+  const submitBtn = e.target.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Processing...';
+
+  // Get form data
+  const formData = {
+    firstName: document.getElementById('firstName').value,
+    lastName: document.getElementById('lastName').value,
+    email: document.getElementById('email').value,
+    phone: document.getElementById('phone').value,
+    username: document.getElementById('username').value,
+    password: document.getElementById('password').value,
+    usage: document.getElementById('usage').value
+  };
+
+  try {
+    // Send to your Render API
+    const response = await fetch('https://suretalk-api.onrender.com/api/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Signup failed');
+    }
+
+    // Success handling
+    alert(`Signup successful! User ID: ${data.userId}`);
+    window.location.href = '/welcome.html'; // Redirect on success
+    
+  } catch (error) {
+    console.error('Signup error:', error);
+    alert(`Error: ${error.message}`);
+  } finally {
+    // Reset button state
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Create Account';
+  }
+});
   </script>
 </body>
 </html>
