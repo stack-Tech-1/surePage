@@ -295,14 +295,15 @@
 
   // Get form data
   const formData = {
-    firstName: document.getElementById('firstName').value,
-    lastName: document.getElementById('lastName').value,
-    email: document.getElementById('email').value,
-    phone: document.getElementById('phone').value,
-    username: document.getElementById('username').value,
-    password: document.getElementById('password').value,
-    usage: document.getElementById('usage').value
-  };
+  firstName: document.getElementById('firstName').value,
+  lastName: document.getElementById('lastName').value,
+  email: document.getElementById('email').value,
+  phone: document.getElementById('phone').value,
+  username: document.getElementById('username').value,
+  password: document.getElementById('password').value,
+  usage: document.getElementById('usage').value,
+  joinProgram: document.getElementById('joinProgram').checked // Added checkbox state
+};
 
   try {
     // Send to your Render API
