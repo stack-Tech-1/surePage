@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Your existing head content -->
+  <title>Login | SureTalk</title>
+</head>
+<body>
+  <!-- Your existing page content until the Google button -->
+  <div class="logo">
+    <h1>SureTalk</h1>
+    <p>Stay Connected!, Stay Sure</p>
+  </div>
+  
+  <div class="signup-container">
+    <h2>Login to Your Account</h2>
+    
+    <form id="login-form">
+      <div class="form-group">
+        <label for="login-email" class="required">Email Address</label>
+        <input type="email" id="login-email" name="email" required placeholder="your@email.com">
+      </div>
+      
+      <div class="form-group">
+        <label for="login-password" class="required">Password</label>
+        <input type="password" id="login-password" name="password" required placeholder="Enter your password">
+      </div>
+      
+      <div class="form-group" style="text-align: right;">
+        <a href="/forgot-password.html" style="color: var(--primary); font-size: 0.9rem;">Forgot password?</a>
+      </div>
+          
+      <button type="submit">Login</button>
+    </form>
+
+  <div class="divider">OR</div>
+  
+  <!-- Google Sign-In Container -->
+  <div id="g_id_onload"
+       data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+       data-callback="handleGoogleSignIn">
+  </div>
+  <div class="g_id_signin" 
+       data-type="standard"
+       data-theme="filled_blue"
+       data-size="large"
+       data-text="continue_with"
+       data-width="300">
+  </div>
+
+  <div class="login-link">
+    Don't have an account? <a href="/">Sign up</a>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    function handleGoogleSignIn(response) {
+      fetch('https://suretalk-api.onrender.com/api/google-auth', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ credential: response.credential })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+          window.location.href = '/dashboard.html';
+        } else {
+          throw new Error(data.error || 'Google login failed');
+        }
+      })
+      .catch(err => {
+        showAlert('error', err.message);
+      });
+    }
+  </script>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner"></span> Logging in...';
+
+      try {
+        const response = await fetch('https://suretalk-api.onrender.com/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: document.getElementById('login-email').value.trim(),
+            password: document.getElementById('login-password').value
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Login failed');
+        }
+
+        // Store token and redirect
+        localStorage.setItem('authToken', data.token);
+        window.location.href = '/dashboard.html';
+        
+      } catch (error) {
+        showAlert('error', error.message);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
+    });
+  </script>
+</body>
+</html>
