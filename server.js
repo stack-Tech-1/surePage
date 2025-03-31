@@ -21,7 +21,7 @@ app.get('/terms.html', (req, res) => {
 // Add similar routes for all other pages
 // privacy.html, verify-email.html etc.
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
