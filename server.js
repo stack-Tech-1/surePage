@@ -18,10 +18,15 @@ app.get('/terms.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'terms.html'));
 });
 
-// Add similar routes for all other pages
-// privacy.html, verify-email.html etc.
+app.get('/privacy.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'privacy.html'));
+  });
 
-const PORT = process.env.PORT || 10000;
+app.get('/verify-email.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'verify-email.html'));
+  });
+
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
