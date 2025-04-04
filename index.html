@@ -259,13 +259,13 @@
       </div>
       
       <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" placeholder="Choose a handle">
+        <label for="userId" class="required">Your Id</label>
+        <input type="text" id="userId" name="userId" required placeholder="Your 10 digit phone-number">
       </div>
       
       <div class="form-group">
-        <label for="password" class="required">Password</label>
-        <input type="password" id="password" name="password" required placeholder="Create a password">
+        <label for="userPin" class="required">Your Pin</label>
+        <input type="userPin" id="userPin" name="userPin" required placeholder="4-Digits">
       </div>
       
       <div class="form-group">
@@ -325,14 +325,14 @@
       lastName: document.getElementById('lastName').value.trim(),
       email: document.getElementById('email').value.trim(),
       phone: document.getElementById('phone').value.trim(),
-      username: document.getElementById('username').value.trim(),
-      password: document.getElementById('password').value,
+      username: document.getElementById('userId').value.trim(),
+      password: document.getElementById('userPin').value,
       usage: document.getElementById('usage').value,
       joinProgram: document.getElementById('joinProgram').checked
     };
 
     // Basic client-side validation
-    if (!formData.firstName || !formData.email || !formData.phone || !formData.password) {
+    if (!formData.firstName || !formData.email || !formData.phone || !formData.userPin || !formData.userId) {
       throw new Error('Please fill all required fields');
     }
 
