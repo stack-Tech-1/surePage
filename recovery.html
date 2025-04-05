@@ -115,6 +115,24 @@
     document.addEventListener('DOMContentLoaded', function() {
 
       const BACKEND_URL = 'https://suretalk-api.onrender.com';
+
+
+    // Handle direct access via /recover-account route
+    if (window.location.pathname === '/recover-account') {
+      document.querySelectorAll('.recovery-step').forEach(step => {
+        step.classList.remove('active');
+      });
+      document.getElementById('step3').classList.add('active');
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      if (token) {
+        document.getElementById('token').value = token;
+        setTimeout(() => {
+          document.getElementById('completeRecovery').click();
+        }, 500);
+      }
+    }
       
       const emailInput = document.getElementById('email');
       const tokenInput = document.getElementById('token');
@@ -192,16 +210,22 @@
         }
       });
       
-      // Handle direct token submission (alternative flow)
-      if (window.location.search.includes('token=')) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get('token');
-        
-        step1.classList.remove('active');
-        step2.classList.remove('active');
-        step3.classList.add('active');
-        tokenInput.value = token;
-      }
+      // Handle direct token submission (alternative flow)      
+    if (window.location.search.includes('token=')) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      
+      document.querySelectorAll('.recovery-step').forEach(step => {
+        step.classList.remove('active');
+      });
+      document.getElementById('step3').classList.add('active');
+      
+      document.getElementById('token').value = token;
+      setTimeout(() => {
+        document.getElementById('completeRecovery').click();
+      }, 500);
+    }
+
       
       // Handle token verification
       completeBtn.addEventListener('click', async function() {
@@ -235,10 +259,14 @@
         }
       });
       
+      
+      
       function showMessage(element, text, type) {
         element.textContent = text;
         element.className = 'message ' + type;
         element.style.display = 'block';
+        
+        
         
         // Auto-hide messages after 5 seconds
         if (type === 'success') {
