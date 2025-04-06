@@ -234,11 +234,6 @@
         // Auto-progress to token verification
         showStep(3);
         tokenInput.value = urlToken;
-        
-        // Auto-submit after short delay
-        setTimeout(() => {
-          completeBtn.click();
-        }, 500);
       }
       
       // Step navigation
@@ -367,7 +362,7 @@
             
             // Redirect to login after delay
             setTimeout(() => {
-              window.location.href = `${FRONTEND_URL}/login.html`;
+              window.location.href = `${FRONTEND_URL}/login`;
             }, 3000);
           } else {
             showMessage(message3, data.error || 'Invalid recovery token', 'error');
