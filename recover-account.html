@@ -5,79 +5,148 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Account Recovery | SureTalk</title>
   <style>
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --danger: #e74c3c;
+      --success: #2ecc71;
+      --gray: #95a5a6;
+      --dark: #2c3e50;
+      --light: #ecf0f1;
+    }
+    
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f5f7fa;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background-color: #f8f9fa;
       margin: 0;
       padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      color: #333;
+      color: var(--dark);
+      line-height: 1.6;
     }
+    
     .container {
       background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 2.5rem;
+      width: 100%;
       max-width: 500px;
-      width: 90%;
+      margin: 1rem;
+    }
+    
+    h1 {
+      color: var(--dark);
+      margin-top: 0;
       text-align: center;
     }
-    h1 {
-      color: #2c3e50;
-      margin-bottom: 20px;
-    }
-    .form-group {
-      margin-bottom: 20px;
-      text-align: left;
-    }
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #3498db;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-      width: 100%;
-    }
-    button:hover {
-      background-color: #2980b9;
-    }
-    .message {
-      margin-top: 20px;
-      padding: 10px;
-      border-radius: 5px;
-    }
-    .success {
-      background-color: #d4edda;
-      color: #155724;
-    }
-    .error {
-      background-color: #f8d7da;
-      color: #721c24;
-    }
+    
     .recovery-step {
       display: none;
+      animation: fadeIn 0.3s ease-out;
     }
-    .active {
+    
+    .recovery-step.active {
       display: block;
+    }
+    
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    button {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    
+    button:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    button:disabled {
+      background-color: var(--gray);
+      cursor: not-allowed;
+    }
+    
+    .message {
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      display: none;
+    }
+    
+    .message.error {
+      background-color: #fde8e8;
+      color: var(--danger);
+      display: block;
+    }
+    
+    .message.success {
+      background-color: #e8fdf1;
+      color: var(--success);
+      display: block;
+    }
+    
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .token-display {
+      word-break: break-all;
+      font-family: monospace;
+      background: var(--light);
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
     }
   </style>
 </head>
@@ -85,84 +154,114 @@
   <div class="container">
     <h1>Account Recovery</h1>
     
+    <!-- Step 1: Email Input -->
     <div id="step1" class="recovery-step active">
-      <p>Enter your email address to recover your User ID and PIN.</p>
+      <p>Enter your email address to begin account recovery.</p>
+      
       <div class="form-group">
         <label for="email">Email Address</label>
-        <input type="email" id="email" required>
+        <input type="email" id="email" placeholder="your@email.com" required>
       </div>
-      <button id="requestRecovery">Request Recovery</button>
+      
+      <button id="requestRecovery">
+        <span id="requestSpinner" class="spinner" style="display: none;"></span>
+        Send Recovery Link
+      </button>
+      
       <div id="message1" class="message"></div>
     </div>
     
+    <!-- Step 2: Confirmation -->
     <div id="step2" class="recovery-step">
-      <p>We've sent a recovery link to your email. Click the link to view your account information.</p>
-      <p>Didn't receive the email? <a href="#" id="resendLink">Resend</a></p>
+      <div class="message success">
+        We've sent a recovery link to your email address. Please check your inbox.
+      </div>
+      
+      <p>Didn't receive the email?</p>
+      <button id="resendButton">
+        <span id="resendSpinner" class="spinner" style="display: none;"></span>
+        Resend Email
+      </button>
+      
       <div id="message2" class="message"></div>
     </div>
     
+    <!-- Step 3: Token Verification -->
     <div id="step3" class="recovery-step">
+      <p>Paste the recovery token from your email:</p>
+      
       <div class="form-group">
-        <label for="token">Paste the recovery token from your email</label>
-        <input type="text" id="token" required>
+        <input type="text" id="token" placeholder="Paste recovery token here" required>
       </div>
-      <button id="completeRecovery">View Account Information</button>
+      
+      <button id="completeRecovery">
+        <span id="completeSpinner" class="spinner" style="display: none;"></span>
+        Verify Token
+      </button>
+      
       <div id="message3" class="message"></div>
     </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-
       const BACKEND_URL = 'https://suretalk-api.onrender.com';
-
-
-    // Handle both root and /recover-account routes
-    if (window.location.pathname === '/' || window.location.pathname === '/recover-account') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
+      const FRONTEND_URL = 'https://suretalk-signup.onrender.com';
       
-      // Hide all steps initially
-      document.querySelectorAll('.recovery-step').forEach(step => {
-        step.classList.remove('active');
-      });
-      
-      if (token) {
-        // Show token submission form
-        document.getElementById('step3').classList.add('active');
-        document.getElementById('token').value = token;
-        
-        // Auto-submit after short delay
-        setTimeout(() => {
-          try {
-            document.getElementById('completeRecovery').click();
-          } catch (error) {
-            console.error('Auto-submit failed:', error);
-            showMessage(document.getElementById('message3'), 
-                      'Failed to process recovery token', 'error');
-          }
-        }, 500);
-      } else {
-        // Show initial form if no token
-        document.getElementById('step1').classList.add('active');
-      }
-    }
-      
-      const emailInput = document.getElementById('email');
-      const tokenInput = document.getElementById('token');
-      const requestBtn = document.getElementById('requestRecovery');
-      const completeBtn = document.getElementById('completeRecovery');
-      const resendLink = document.getElementById('resendLink');
-      const message1 = document.getElementById('message1');
-      const message2 = document.getElementById('message2');
-      const message3 = document.getElementById('message3');
+      // DOM elements
       const step1 = document.getElementById('step1');
       const step2 = document.getElementById('step2');
       const step3 = document.getElementById('step3');
+      const emailInput = document.getElementById('email');
+      const tokenInput = document.getElementById('token');
+      const requestBtn = document.getElementById('requestRecovery');
+      const resendBtn = document.getElementById('resendButton');
+      const completeBtn = document.getElementById('completeRecovery');
+      const message1 = document.getElementById('message1');
+      const message2 = document.getElementById('message2');
+      const message3 = document.getElementById('message3');
+      const requestSpinner = document.getElementById('requestSpinner');
+      const resendSpinner = document.getElementById('resendSpinner');
+      const completeSpinner = document.getElementById('completeSpinner');
       
       let recoveryEmail = '';
       
-      // Handle recovery request
+      // Check URL for token (direct link access)
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlToken = urlParams.get('token');
+      
+      if (urlToken) {
+        // Auto-progress to token verification
+        showStep(3);
+        tokenInput.value = urlToken;
+        
+        // Auto-submit after short delay
+        setTimeout(() => {
+          completeBtn.click();
+        }, 500);
+      }
+      
+      // Step navigation
+      function showStep(stepNumber) {
+        [step1, step2, step3].forEach((step, index) => {
+          step.classList.toggle('active', index + 1 === stepNumber);
+        });
+      }
+      
+      // Message display
+      function showMessage(element, text, type) {
+        element.textContent = text;
+        element.className = `message ${type}`;
+        element.style.display = 'block';
+        
+        if (type === 'success') {
+          setTimeout(() => {
+            element.style.display = 'none';
+          }, 5000);
+        }
+      }
+      
+      // Request recovery link
       requestBtn.addEventListener('click', async function() {
         const email = emailInput.value.trim();
         
@@ -172,6 +271,10 @@
         }
         
         try {
+          requestBtn.disabled = true;
+          requestSpinner.style.display = 'inline-block';
+          requestBtn.textContent = ' Sending...';
+          
           const response = await fetch(`${BACKEND_URL}/api/request-recovery`, {
             method: 'POST',
             headers: {
@@ -184,25 +287,29 @@
           
           if (response.ok) {
             recoveryEmail = email;
-            step1.classList.remove('active');
-            step2.classList.add('active');
+            showStep(2);
           } else {
             showMessage(message1, data.error || 'Recovery request failed', 'error');
           }
         } catch (error) {
-          console.error('Full error:', error);
-          const errorMsg = error.message.includes('Failed to fetch') ? 
-                         'Cannot connect to server. Please check your network.' : 
-                         'Network error. Please try again.';
-          showMessage(message1, errorMsg, 'error');
+          console.error('Request error:', error);
+          showMessage(message1, 'Network error. Please try again.', 'error');
+        } finally {
+          requestBtn.disabled = false;
+          requestSpinner.style.display = 'none';
+          requestBtn.textContent = 'Send Recovery Link';
         }
       });
       
-      // Handle resend
-      resendLink.addEventListener('click', async function(e) {
-        e.preventDefault();
+      // Resend recovery link
+      resendBtn.addEventListener('click', async function() {
+        if (!recoveryEmail) return;
         
         try {
+          resendBtn.disabled = true;
+          resendSpinner.style.display = 'inline-block';
+          resendBtn.textContent = ' Resending...';
+          
           const response = await fetch(`${BACKEND_URL}/api/request-recovery`, {
             method: 'POST',
             headers: {
@@ -221,27 +328,14 @@
         } catch (error) {
           console.error('Resend error:', error);
           showMessage(message2, 'Network error. Please try again.', 'error');
+        } finally {
+          resendBtn.disabled = false;
+          resendSpinner.style.display = 'none';
+          resendBtn.textContent = 'Resend Email';
         }
       });
       
-      // Handle direct token submission (alternative flow)      
-    if (window.location.search.includes('token=')) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const token = urlParams.get('token');
-      
-      document.querySelectorAll('.recovery-step').forEach(step => {
-        step.classList.remove('active');
-      });
-      document.getElementById('step3').classList.add('active');
-      
-      document.getElementById('token').value = token;
-      setTimeout(() => {
-        document.getElementById('completeRecovery').click();
-      }, 500);
-    }
-
-      
-      // Handle token verification
+      // Complete recovery with token
       completeBtn.addEventListener('click', async function() {
         const token = tokenInput.value.trim();
         
@@ -251,6 +345,10 @@
         }
         
         try {
+          completeBtn.disabled = true;
+          completeSpinner.style.display = 'inline-block';
+          completeBtn.textContent = ' Verifying...';
+          
           const response = await fetch(`${BACKEND_URL}/api/complete-recovery`, {
             method: 'POST',
             headers: {
@@ -262,33 +360,27 @@
           const data = await response.json();
           
           if (response.ok) {
-            showMessage(message3, data.message || 'Account information has been sent to your email', 'success');
-            tokenInput.value = '';
+            showMessage(message3, 
+              'Check your email for temporary access credentials. ' +
+              'You will be redirected shortly...', 
+              'success');
+            
+            // Redirect to login after delay
+            setTimeout(() => {
+              window.location.href = `${FRONTEND_URL}/login.html`;
+            }, 3000);
           } else {
             showMessage(message3, data.error || 'Invalid recovery token', 'error');
           }
         } catch (error) {
-          console.error('Token verification error:', error);
+          console.error('Verification error:', error);
           showMessage(message3, 'Network error. Please try again.', 'error');
+        } finally {
+          completeBtn.disabled = false;
+          completeSpinner.style.display = 'none';
+          completeBtn.textContent = 'Verify Token';
         }
       });
-      
-      
-      
-      function showMessage(element, text, type) {
-        element.textContent = text;
-        element.className = 'message ' + type;
-        element.style.display = 'block';
-        
-        
-        
-        // Auto-hide messages after 5 seconds
-        if (type === 'success') {
-          setTimeout(() => {
-            element.style.display = 'none';
-          }, 5000);
-        }
-      }
     });
   </script>
 </body>
