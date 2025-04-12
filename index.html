@@ -435,7 +435,7 @@ window.location.href = '/verify-email.html?email=' + encodeURIComponent(formData
     // Success handling
     showAlert('success', `Registration successful! Welcome ${formData.firstName}`);
     setTimeout(() => {
-      window.location.href = 'https://suretalknow.com/';
+      window.location.href = '/verify-email.html';
     }, 2000);
     
   } catch (error) {
