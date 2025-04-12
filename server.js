@@ -34,13 +34,13 @@ app.get(['/', '/index.html'], (req, res) => {
 });
 
 // Add specific handling for /recover-account
-app.get(['/recover-account', '/recover-account.html'], (req, res) => {
-  res.sendFile(path.join(__dirname, 'recovery.html'), {
-    headers: {
-      'Content-Type': 'text/html'
-    }
-  });
-});
+//app.get(['/recover-account', '/recover-account.html'], (req, res) => {
+  //res.sendFile(path.join(__dirname, 'recovery.html'), {
+    //headers: {
+      //'Content-Type': 'text/html'
+    //}
+  //});
+//});
 
 // 404 handler
 app.use((req, res) => {
