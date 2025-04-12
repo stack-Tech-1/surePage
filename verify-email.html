@@ -66,17 +66,28 @@
     // Resend functionality
     document.getElementById('resendLink').addEventListener('click', async (e) => {
       e.preventDefault();
-      try {
-        const response = await fetch(`https://suretalk-api.onrender.com/api/resend-verification?email=${encodeURIComponent(userEmail)}`);
-        if (response.ok) {
-          alert('Verification email resent successfully!');
-        } else {
-          throw new Error('Failed to resend email');
-        }
-      } catch (error) {
-        alert(error.message);
-      }
-    });
+
+  // Ensure email is available
+  const userEmail = document.getElementById('userEmail').textContent;
+  if (!userEmail) {
+    alert('Email is missing.');
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://suretalk-api.onrender.com/api/resend-verification?email=${encodeURIComponent(userEmail)}`);
+    if (response.ok) {
+      const data = await response.json();
+      alert(data.message || 'Verification email resent successfully!');
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to resend email');
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
   </script>
 </body>
 </html>
