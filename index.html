@@ -322,6 +322,47 @@
   </div>
 
   <script>
+
+const emailInput = document.getElementById('email');
+  const userIdInput = document.getElementById('userId');
+
+  emailInput.addEventListener('blur', async () => {
+    const email = emailInput.value.trim();
+    if (!email) return;
+
+    try {
+      const res = await fetch(`https://suretalk-api.onrender.com/api/check-email?email=${encodeURIComponent(email)}`);
+      if (!res.ok) {
+        const data = await res.json();
+        showAlert('error', data.error || 'Email is already taken');
+        emailInput.setCustomValidity('This email is already in use');
+      } else {
+        emailInput.setCustomValidity('');
+      }
+    } catch (err) {
+      console.error('Email check failed', err);
+    }
+  });
+
+  userIdInput.addEventListener('blur', async () => {
+    const userId = userIdInput.value.trim();
+    if (!userId) return;
+
+    try {
+      const res = await fetch(`https://suretalk-api.onrender.com/api/check-userid?userId=${encodeURIComponent(userId)}`);
+      if (!res.ok) {
+        const data = await res.json();
+        showAlert('error', data.error || 'User ID is already taken');
+        userIdInput.setCustomValidity('This user ID is already taken');
+      } else {
+        userIdInput.setCustomValidity('');
+      }
+    } catch (err) {
+      console.error('User ID check failed', err);
+    }
+  });
+
+
     document.getElementById('suretalk-signup-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   
