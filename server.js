@@ -17,7 +17,7 @@ app.use(express.static(__dirname, {
 }));
 
 // Handle all page routes (with and without .html)
-const pages = ['login', 'terms', 'privacy', 'verify-email', 'welcome', 'recover-account'];
+const pages = ['terms', 'privacy', 'verify-email', 'recover-account'];
 pages.forEach(page => {
   app.get([`/${page}`, `/${page}.html`], (req, res) => {
     res.sendFile(path.join(__dirname, `${page}.html`), {
