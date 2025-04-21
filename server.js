@@ -17,7 +17,7 @@ app.use(express.static(__dirname, {
 }));
 
 // Handle all page routes (with and without .html)
-const pages = ['terms', 'privacy', 'verify-email', 'recover-account'];
+const pages = ['terms', 'privacy', 'verify-email', 'recover-account', 'confirm-email-link'];
 pages.forEach(page => {
   app.get([`/${page}`, `/${page}.html`], (req, res) => {
     res.sendFile(path.join(__dirname, `${page}.html`), {
@@ -33,14 +33,6 @@ app.get(['/', '/index.html'], (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Add specific handling for /recover-account
-//app.get(['/recover-account', '/recover-account.html'], (req, res) => {
-  //res.sendFile(path.join(__dirname, 'recovery.html'), {
-    //headers: {
-      //'Content-Type': 'text/html'
-    //}
-  //});
-//});
 
 // 404 handler
 app.use((req, res) => {
